@@ -1,20 +1,29 @@
 
 <B_facettes>
-    <h2>Facettes associées</h2>
     <div class='row-fluid'>
 <BOUCLE_facettes(DATA){source tableau, #FACETS}><B_liste_facettes>
     <div class='span4'>
-        <h3>#CLE</h3>
+        [<h3>(#CLE
+        	|replace{annee,Année}
+        	|replace{follow,Auteurs à suivre}
+        	|replace{tag,Tags}
+        	|replace{oc,Tags automatiques}
+        	)</h3>]
         <div class='liste'>
             <ul class='liste-items'>
         <BOUCLE_liste_facettes(DATA){source tableau, #VALEUR}{cle>''}{valeur>1}>[(#TOTAL_BOUCLE|>{1}|oui)
                 <li class='item'>[(#ENV{[(#_facettes:CLE)]}|=={#CLE}|?{
                 	<a href="[(#SELF
+			|parametre_url{recherche,#ENV{recherche}}
 			|parametre_url{debut_recherche_sphinx,''}
 			|parametre_url{#_facettes:CLE,''}
-			)]">✓</a> <strong>#CLE</strong> ([(#VALEUR)])
+			)]">✓</a> <strong>#CLE</strong>
+				[<span class="effectif">((#VALEUR)[ (#VAL{messages}|unique{#_facettes:CLE})])</span>]
                 ,
-                	<a href="[(#SELF|parametre_url{[(#_facettes:CLE)],#CLE})]">#CLE</a> ([(#VALEUR)])
+                	<span>  </span> <a href="[(#SELF
+                	|parametre_url{recherche,#ENV{recherche}}
+                	|parametre_url{[(#_facettes:CLE)],#CLE})]">#CLE</a>
+                	[<span class="effectif">((#VALEUR)[ (#VAL{messages}|unique{#_facettes:CLE})])</span>]
                 })]</li>
         ]</BOUCLE_liste_facettes>
             </ul>
