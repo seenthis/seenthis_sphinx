@@ -135,14 +135,11 @@ function seenthis_indexer_conditionnel($where = '1=0') {
 		foreach($tags as $k => &$v) {
 			if (count($v))
 				$b['properties'][$k] = $v;
-
-			if ($k == 'url') {
-				foreach($v as $url) {
-					$b['content'] = str_replace($url, ' ', $b['content']);
-					$b['summary'] = str_replace($url, ' ', $b['summary']);
-				}
-			}
 		}
+
+		// supprimer les liens, on ne veut pas les indexer dans le fulltext
+		$b['content'] = preg_replace("/"._REG_URL."/ui", ' ', $b['content']);
+		$b['summary'] = preg_replace("/"._REG_URL."/ui", ' ', $b['summary']);
 
 		$b['properties'] = json_encode($b['properties']);
 
