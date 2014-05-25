@@ -11,6 +11,13 @@
 
 	<pipeline>
 		<nom>seenthis_instance_objet</nom>
+		<action>indexer_me</action>
+		<inclure>seenthissphinx_options.php</inclure>
+	</pipeline>
+
+	<pipeline>
+		<nom>cache_me</nom>
+		<action>indexer_me</action>
 		<inclure>seenthissphinx_options.php</inclure>
 	</pipeline>
 

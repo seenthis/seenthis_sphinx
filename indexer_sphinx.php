@@ -1,7 +1,6 @@
 <?php
 
-function indexer_sphinx($t) {
-  $id_me = intval( ($t['id_parent'] > 0 ) ? $t['id_parent'] : $t['id_me'] );
+function indexer_sphinx($id_me) {
   spip_log('indexer '.var_export($id_me,true), 'sphinx');
   seenthis_indexer_un($id_me);
 }
@@ -103,6 +102,8 @@ function seenthis_indexer_conditionnel($where = '1=0') {
 			? $t['texte'] . "\n\n----\n\n".$t['rept']
 			: '',
 		'properties' => array(
+			'objet' => 'me',
+			'id_objet' => $t['id_me'],
 			'date' => $t['date'],
 			'auteurs' => array_values(array_unique(array_map('intval',
 				array_merge(array($t['id_auteur']), explode(',',$t['rauteurs']))

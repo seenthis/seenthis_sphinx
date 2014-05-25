@@ -6,10 +6,14 @@ if ($_GET['page'] == 'sphinx' AND isset($_REQUEST['recherche'])) {
 
 defined('_SPHINXQL_INDEX') || define('_SPHINXQL_INDEX', 'seenthisrt');
 
-function seenthissphinx_seenthis_instance_objet($t) {
-  include_spip('indexer_sphinx');
-  if (function_exists('indexer_sphinx'))
-    indexer_sphinx($t);
+function seenthissphinx_indexer_me($t) {
+	if (is_array($t))
+		$id_me = intval( ($t['id_parent'] > 0)
+			? $t['id_parent'] : $t['id_me']
+		);
+	else
+		$id_me = $t;
+	job_queue_add('indexer_sphinx', 'Indexer sphinx '.$t, array($t), 'indexer_sphinx', true);
 }
 
 
