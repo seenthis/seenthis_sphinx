@@ -16,6 +16,7 @@
 
 	<necessite id="SPIP" version="[2.1.0;]" />
 	<necessite id="seenthis" />
+	<necessite id="indexer" />
 	<necessite id="queue" />
 </plugin>
 
