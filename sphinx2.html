@@ -1,0 +1,291 @@
+#CACHE{0}
+
+	<div id="entete_people">
+
+	
+		<h1>[<:info_rechercher_02:> (#ENV{recherche_initiale}|sinon{#ENV{recherche}})]</h1>
+	
+		[(#SESSION{id_auteur}|oui)
+		<div class="limite_date">
+		<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{follow,#SESSION{login}})]"[(#ENV{follow}|=={#SESSION{login}}|oui)class="actif"]>Mes messages</a>
+		|
+		<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{follow,''})]"[(#ENV{follow}|non)class="actif"]>Messages de mon r&#233;seau</a>
+		|
+		<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{follow,all})]"[(#ENV{follow}|=={all}|oui)class="actif"]>Tous les messages</a>
+
+		[(#ENV{follow}|in_array{#LISTE{#SESSION{login},all}}|non)[
+			| <a class="actif">Les messages de @(#ENV{follow})</a>
+		]]
+		</div>
+		]
+
+		[(#REM)
+			<div class="rss"><a href="index.php?page=backend_mot&recherche=[(#ENV{recherche_initiale}|sinon{#ENV{recherche}}|mb_strtolower{UTF-8}|rawurlencode)]">RSS: [(#ENV{recherche_initiale}|sinon{#ENV{recherche}}|mb_strtolower{UTF-8})]</a></div>
+		]
+
+
+		<div id="enfants_mots">
+		<B_enfants>
+			<ul>
+		<BOUCLE_enfants(spip_me_tags)
+		{si #ENV{recherche}|strlen}
+		{tag LIKE #(#ENV{recherche}|likeq)%}
+		{class=#}
+		{fusion tag}
+		{par tag}
+		{0,200}
+		>
+			<li>#<a href="tag/[(#TAG|replace{#}|mb_strtolower{UTF-8}|urlencode_1738_plus)]">[(#TAG|replace{#}|mb_strtolower{UTF-8})]</a>
+			</li>
+		</BOUCLE_enfants>
+			</ul>
+		</B_enfants>
+		</div>
+
+
+	[(#SET{follow,#ENV{follow}})]
+	[(#SESSION{id_auteur}|non)
+		[(#SET{follow,all})]
+	]
+	
+	[(#ENV{age}|oui)
+		[(#SET{age,[(#ENV{age}|decaler_date)]})]
+	]
+
+<style>
+article .spip_surligne {
+	background: #ffa;
+	color: #200;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+aside.tri {
+	margin-top: 6px;
+}
+
+#bookmarklet h2 { display: none; }
+#bookmarklet h3 { margin-top: 10px; }
+
+#sphinxquery { display: none; }
+</style>
+
+
+#SET{tri,
+	"INTERVAL(date, NOW()-90*86400, NOW()-30*86400, NOW()-7*86400, NOW()-86400, NOW()-3600) AS tri"
+}
+
+<BOUCLE_identifier_follow(AUTEURS)
+	{login IN #ENV{follow}}
+	{si #ENV{follow}}
+	{si #ENV{follow}|!={all}}
+	{tous}
+>
+	#SET{share,#ID_AUTEUR}
+</BOUCLE_identifier_follow>
+	[(#ENV{follow}|!={all}|?{
+		#SET{share,#SESSION{id_auteur}|liste_follow}
+		#SET{share,#GET{share}|push{#SESSION{id_auteur}}}
+	})]
+<//B_identifier_follow>
+
+
+<BOUCLE_max_sphinx(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.oc) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.url) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #GET{share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{filter 1, properties.published=1}
+	{0,1}
+>#SET{max,#SCORE}</BOUCLE_max_sphinx>
+
+
+<aside class="tri">
+	<small>
+	[(#SPHINX_META|table_valeur{total}|=={1000}|?{'+ de '}) ][(#SPHINX_META|table_valeur{total})][&nbsp;(#SPHINX_META|table_valeur{total}|>{1}|?{résultats,résultat})]
+		([(#SPHINX_META|table_valeur{time}|mult{1000})] ms)
+
+
+
+	[(#ENV{order}|match{date}|?{
+		[(#SET{tri,date AS tri})]
+	})]
+	[(#ENV{order}|match{score}|?{
+		[(#SET{tri,WEIGHT() AS tri})]
+	})]
+	[(#ENV{order}|match{stars}|?{
+		[(#SET{tri,LENGTH(properties.share) AS tri})]
+	})]
+
+
+	[(#SPHINX_META|table_valeur{total}|>{10}|oui)
+	<p>tri:
+	[(#ENV{order}|non|?{<strong>naturel</strong>,<a href="[(#SELF|parametre_url{order,''})]">naturel</a>})]
+	[(#ENV{order}|match{score}|?{<strong>par pertinence</strong>,<a href="[(#SELF|parametre_url{order,score})]">par pertinence</a>})]
+	[(#ENV{order}|match{date}|?{<strong>par date</strong>,<a href="[(#SELF|parametre_url{order,date})]">par date</a>})]
+	[(#ENV{order}|match{stars}|?{<strong>par stars</strong>,<a href="[(#SELF|parametre_url{order,stars})]">par stars</a>})]
+	</p>
+
+	]
+
+	</small>
+
+</aside>
+
+<//B_max_sphinx>
+
+
+	</div>
+
+
+
+	<div id="centre">
+
+
+<B_recherche_sphinx>
+
+<ul id=messages>
+
+
+	<div class='liste long resultats'>
+		[<p>(#SPHINX_MESSAGE)</p>]
+
+		[<div class="pagination">(#ENV{debut_recherche_sphinx}|?{#PAGINATION,#ANCRE_PAGINATION})</div>]
+		<ul class='liste-items'>
+
+<BOUCLE_recherche_sphinx(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+
+	{select *}
+	{select #GET{tri}}
+
+	{filter #ENV{annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #GET{share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+
+	{!par tri}
+	{!par date}
+
+	{filter 1, properties.published=1}
+
+	{pagination 20}
+>
+
+	<li class='item'>
+	[<div class="surlignable">
+		(#ID|microcache{noisettes/afficher_message})
+	</div>]
+	</li>
+
+</BOUCLE_recherche_sphinx>
+		</ul>
+	</div>
+
+	[<div class="pagination">(#PAGINATION)</div>]
+
+	[<div id="sphinxquery"><tt>(#SPHINX_QUERY)</tt></div>]
+
+
+</B_recherche_sphinx>
+	<h2>Pas de résultat pour : [(#ENV{recherche_initiale}|sinon{#ENV{recherche}})]</h2>
+
+	[<p>(#SPHINX_MESSAGE)</p>]
+
+
+	[<div id="sphinxquery"><tt>(#SPHINX_QUERY)</tt>
+		[(#INCLURE{fond=liste/sphinx_metas,meta=#SPHINX_META,env})]
+	</div>]
+
+
+<//B_recherche_sphinx>
+
+</ul>
+   </div>
+	
+	<aside id="droite">
+
+	<div id="bookmarklet">
+
+<BOUCLE_f_annee(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{-annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #GET{share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{facet annee, 'YEAR(date) ORDER BY FACET() DESC'}
+	{0,1}
+	{filter 1, properties.published=1}
+>[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
+</BOUCLE_f_annee>
+
+<BOUCLE_f_author(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #GET{-share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{facet follow, 'properties.login ORDER BY COUNT(*) DESC'}
+	{0,1}
+	{filter 1, properties.published=1}
+>[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
+</BOUCLE_f_author>
+
+<BOUCLE_f_tag(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{-tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #GET{share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{facet tag, 'properties.tags ORDER BY COUNT(*) DESC'}
+	{0,1}
+	{filter 1, properties.published=1}
+>[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
+</BOUCLE_f_tag>
+
+<BOUCLE_f_oc(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{-oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #GET{share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{facet oc, 'properties.oc ORDER BY COUNT(*) DESC'}
+	{0,1}
+	{filter 1, properties.published=1}
+>[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
+</BOUCLE_f_oc>
+
+	</div>
+
+	</aside>
+	

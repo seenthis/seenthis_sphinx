@@ -1,0 +1,50 @@
+﻿<base href="http://xeoncross.github.io/jr/" />
+
+[-]: <pre>
+
+# Aide pour la recherche Sphinx
+
+<form method="get" action="http://seenthis.net/recherche">
+<input type="text" name="recherche" /><input type="submit" value="rechercher sur seenthis" />
+</form>
+
+Le moteur de recherche de seenthis présente une syntaxe particulière et un système de facettes, qui permettent d’affiner sa requête lorsque les résultats sont nombreux.
+
+## Syntaxe
+
+**Opérateur <code>&amp;</code> (et).** Si vous souhaitez que deux mots soient présents, vous pouvez utiliser l’opérateur <code>&amp;</code>. C’est l’opérateur par défaut, c’est-à-dire qu’en l’absence d’autre précision, les mots demandés doivent tous être présents dans le message recherché. Exemple : <a href="http://seenthis.net/recherche?recherche=site+statique"><code>site statique</code></a> ou encore <a href="http://seenthis.net/recherche?recherche=site+&+statique"><code>site &amp; statique</code></a>.
+
+**Opérateur <code>|</code> (ou).** Si vous souhaitez trouver les messages contenant un mot ou un autre, utilisez l’opérateur <code>|</code> ; par exemple <a href="http://seenthis.net/recherche?recherche=liban+|+lebanon"><code>liban | lebanon</code></a>.
+
+**Opérateur <code>-</code> (non).** Rejeter les messages contenant un mot. Exemple : <a href="http://seenthis.net/recherche?recherche=Paris+-France"><code>Paris -France</code></a>. Cet opérateur ne peut pas être utilisé seul (<code>-France</code> ne fonctionne pas).
+
+**"Expression exacte".** Si vous cherchez une expression exacte, employez des guillemets : <a href="http://seenthis.net/recherche?recherche=%22inside+job%22"><code>"inside job"</code></a>.
+
+**Début de mot.** L’étoile désigne un mot commençant par « bleu » (bleu, bleue, bleux) : <a href="http://seenthis.net/recherche?recherche=bleu*"><code>bleu*</code></a>.
+
+Les opérateurs sont combinables entre eux, en utilisant des parenthèses : <a href="http://seenthis.net/recherche?recherche=yeux+(bleu*+|+vert*)"><code>yeux (bleu* | vert*)</code></a>.
+
+D’autres opérateurs, plus spécialisés, sont disponibles :
+
+**Proximité.** Les mots demandés ne doivent pas être éloignés de plus de {n} mots (bornes comprises): ainsi <a href="http://seenthis.net/recherche?recherche=%22secret+text%22~5"><code>"secret text"~5</code></a> pourra trouver une phrase du type « the secret draft text…»
+
+**Quorum.** Un certain nombre des mots demandés doivent être présents : <a href="http://seenthis.net/recherche?recherche=%22bleu+blanc+vert+jaune+rouge+noir+marron+orange%22/3"><code>"bleu blanc vert jaune rouge noir marron orange"/3</code></a>
+
+**Ordre des mots**. <code>&lt;&lt;</code> signifie « avant » : <a href="http://seenthis.net/recherche?recherche=bienvenue+<<+montparnasse"><code>bienvenue &lt;&lt; montparnasse</code></a>
+
+
+
+## Facettes
+
+Lorsque la recherche renvoie de nombreux résultats, il peut être fastidieux d’en parcourir toute la liste. Dans ce cas le moteur de recherche affiche dans la marge des « facettes », qui indiquent des auteurs, des mots-clés, ou encore des dates, relatifs à la requête. Ces facettes permettent d’affiner la demande en limitant la liste des résultats à ceux qui correspondent à ces caractéristiques.
+
+
+## Tri
+
+De même, si le tri initial ne convient pas, il est possible de classer les résultats par date, par score, ou encore par nombre d’étoiles (ce qui permet d’afficher en tête les messages les plus partagés parmi ceux qui correspondent à la recherche).
+
+## Astuces
+
+Il est possible de demander un tag ou les messages écrits par un auteur précis en ajoutant directement dans la recherche le code <code>#tag</code> ou <code>@auteur</code>. Exemple : <a href="http://seenthis.net/recherche?recherche=ONU+@reka+%23asile"><code>ONU @reka #asile</code></a>
+
+<script src="js/jr.js"></script>

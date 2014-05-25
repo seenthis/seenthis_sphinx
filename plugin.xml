@@ -1,0 +1,21 @@
+<plugin>
+	<nom>Seenthis - Sphinx</nom>
+	<auteur>Fil</auteur>
+	<version>0.1.0</version>
+	<etat>dev</etat>
+	<description>
+		Sphinx pour Seenthis
+	</description>
+	<prefix>seenthissphinx</prefix>
+	<options>seenthissphinx_options.php</options>
+
+	<pipeline>
+		<nom>seenthis_instance_objet</nom>
+		<inclure>seenthissphinx_options.php</inclure>
+	</pipeline>
+
+	<necessite id="SPIP" version="[2.1.0;]" />
+	<necessite id="seenthis" />
+	<necessite id="queue" />
+</plugin>
+
