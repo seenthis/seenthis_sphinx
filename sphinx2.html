@@ -105,9 +105,6 @@ aside#droite .effectif {
 
 
 <aside class="tri">
-	<p>[(#SPHINX_META|table_valeur{total}|=={1000}|?{'+ de '}) ][(#SPHINX_META|table_valeur{total})][&nbsp;(#SPHINX_META|table_valeur{total}|>{1}|?{résultats,résultat})]</p>
-
-
 
 	[(#ENV{order}|match{date}|?{
 		[(#SET{tri,date AS tri})]
@@ -123,11 +120,10 @@ aside#droite .effectif {
 	[(#SPHINX_META|table_valeur{total}|>{10}|oui)
 	<p>
 	<small>
-	tri :
-	[(#ENV{order}|non|?{<strong>naturel</strong>,<a href="[(#SELF|parametre_url{order,''})]">naturel</a>}) / ]
-	[(#ENV{order}|match{score}|?{<strong>par pertinence</strong>,<a href="[(#SELF|parametre_url{order,score})]">par pertinence</a>}) / ]
-	[(#ENV{order}|match{date}|?{<strong>par date</strong>,<a href="[(#SELF|parametre_url{order,date})]">par date</a>}) / ]
-	[(#ENV{order}|match{stars}|?{<strong>par popularité</strong>,<a href="[(#SELF|parametre_url{order,stars})]">par popularité</a>})]
+	[(#ENV{order}|non|?{<strong>Tri naturel</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,''})]">Tri naturel</a>}) | ]
+	[(#ENV{order}|match{score}|?{<strong>par pertinence</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,score})]">par pertinence</a>}) | ]
+	[(#ENV{order}|match{date}|?{<strong>par date</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,date})]">par date</a>}) | ]
+	[(#ENV{order}|match{stars}|?{<strong>par popularité</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,stars})]">par popularité</a>})]
 	</small></p>
 
 	]
@@ -145,7 +141,7 @@ aside#droite .effectif {
 	<div id="centre">
 
 
-<B_recherche_sphinx>
+<B_messages>
 
 <ul id=messages>
 
@@ -153,10 +149,11 @@ aside#droite .effectif {
 	<div class='liste long resultats'>
 		[<p>(#SPHINX_MESSAGE)</p>]
 
-		[<div class="pagination">(#ENV{debut_recherche_sphinx}|?{#PAGINATION,#ANCRE_PAGINATION})</div>]
+		[<div class="pagination">(#PAGINATION)</div>]
+
 		<ul class='liste-items'>
 
-<BOUCLE_recherche_sphinx(SPHINX)
+<BOUCLE_messages(SPHINX)
 	{index seenthis}
 	{recherche #ENV*{recherche}}
 
@@ -186,7 +183,7 @@ aside#droite .effectif {
 	</div>]
 	</li>
 
-</BOUCLE_recherche_sphinx>
+</BOUCLE_messages>
 		</ul>
 	</div>
 
@@ -195,7 +192,7 @@ aside#droite .effectif {
 	[<div id="sphinxquery"><tt>(#SPHINX_QUERY)</tt></div>]
 
 
-</B_recherche_sphinx>
+</B_messages>
 	<h2>Pas de résultat pour : [(#ENV{recherche_initiale}|sinon{#ENV{recherche}})]</h2>
 
 	[<p>(#SPHINX_MESSAGE)</p>]
@@ -206,7 +203,7 @@ aside#droite .effectif {
 	</div>]
 
 
-<//B_recherche_sphinx>
+<//B_messages>
 
 </ul>
    </div>

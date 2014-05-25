@@ -15,7 +15,7 @@
                 <li class='item'>[(#ENV{[(#_facettes:CLE)]}|=={#CLE}|?{
                 	<a href="[(#SELF
 			|parametre_url{recherche,#ENV{recherche}}
-			|parametre_url{debut_recherche_sphinx,''}
+			|parametre_url{debut_messages,''}
 			|parametre_url{#_facettes:CLE,''}
 			)]">✓</a> <strong>#CLE</strong>
 				[<span class="effectif">((#VALEUR)[ (#VAL{messages}|unique{#_facettes:CLE})])</span>]
