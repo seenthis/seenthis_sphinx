@@ -179,10 +179,10 @@ aside#droite .effectif {
 
 	{pagination 20}
 >
-
-	<li class='item'>
+	#SET{id,#PROPERTIES|json_decode{1}|table_valeur{id_objet}}
+	<li class='item' id="message#GET{id}">
 	[<div class="surlignable">
-		(#PROPERTIES|json_decode{1}|table_valeur{id_objet}|microcache{noisettes/afficher_message})
+		(#GET{id}|microcache{noisettes/afficher_message})
 	</div>]
 	</li>
 
