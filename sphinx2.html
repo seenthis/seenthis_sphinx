@@ -85,14 +85,14 @@ aside#droite .effectif {
 }
 
 <BOUCLE_identifier_follow(AUTEURS)
-	{login IN #ENV{follow}}
-	{si #ENV{follow}}
-	{si #ENV{follow}|!={all}}
+	{login IN #GET{follow}}
+	{si #GET{follow}}
+	{si #GET{follow}|!={all}}
 	{tous}
 >
 	#SET{share,#ID_AUTEUR}
 </BOUCLE_identifier_follow>
-	[(#ENV{follow}|!={all}|?{
+	[(#GET{follow}|!={all}|?{
 		#SET{share,#SESSION{id_auteur}|liste_follow}
 		#SET{share,#GET{share}|push{#SESSION{id_auteur}}}
 	})]
