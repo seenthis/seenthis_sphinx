@@ -5,7 +5,7 @@
     <div class='span4'>
         [<h3>(#CLE
         	|replace{annee,Année}
-        	|replace{follow,Auteurs à suivre}
+        	|replace{follow,Auteur·e·s à suivre}
         	|replace{tag,Tags}
         	|replace{oc,Tags automatiques}
         	)</h3>]
@@ -17,12 +17,12 @@
 			|parametre_url{recherche,#ENV{recherche}}
 			|parametre_url{debut_messages,''}
 			|parametre_url{#_facettes:CLE,''}
-			)]">✓</a> <strong>#CLE</strong>
+			)]" style="text-decoration:none;">&times;</a> [(#_facettes:CLE|=={follow}|?{@})][(#CLE|match{^#})]<strong>[(#CLE|replace{^#})]</strong>
 				[<span class="effectif">((#VALEUR)[ (#VAL{messages}|unique{#_facettes:CLE})])</span>]
                 ,
-                	<span>  </span> <a href="[(#SELF
+                	<span>  </span> [(#_facettes:CLE|=={follow}|?{@})][(#CLE|match{^#})]<a href="[(#SELF
                 	|parametre_url{recherche,#ENV{recherche}}
-                	|parametre_url{[(#_facettes:CLE)],#CLE})]">#CLE</a>
+                	|parametre_url{[(#_facettes:CLE)],#CLE})]">[(#CLE|replace{^#})]</a>
                 	[<span class="effectif">((#VALEUR)[ (#VAL{messages}|unique{#_facettes:CLE})])</span>]
                 })]</li>
         ]</BOUCLE_liste_facettes>

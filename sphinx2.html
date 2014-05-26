@@ -7,11 +7,22 @@
 
 
 <form method="get" action="http://seenthis.net/recherche">
-<input type="text" name="recherche" value="#RECHERCHE" placeholder="rechercher…" /><input type="submit" value="rechercher sur seenthis/sphinx" />
+<input type="text" name="recherche" value="#RECHERCHE" placeholder="rechercher…" /><input type="submit" value="recherche sur seenthis/sphinx" />
 </form>
 
-
-
+<B_filtres>
+	<p>Filtres :
+<BOUCLE_filtres(DATA)
+	{liste, annee,login,follow,tag,oc}
+>[(#ENV{#VALEUR}|oui)
+	[(#VALEUR|match{follow|login}|?{@})][(#ENV{#VALEUR}|match{^#})]<a href="[(#SELF
+		|parametre_url{recherche,#ENV{recherche}}
+		|parametre_url{debut_messages,''}
+		|parametre_url{#VALEUR,''}
+	)]" style="text-decoration:none;">[(#ENV{#VALEUR}|replace{^#})]</a>
+]</BOUCLE_filtres>
+	</p>
+</B_filtres>
 
 		[(#SESSION{id_auteur}|oui)
 		<div class="limite_date">
@@ -121,8 +132,8 @@ aside#droite .effectif {
 	<p>
 	<small>
 	[(#ENV{order}|non|?{<strong>Tri naturel</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,''})]">Tri naturel</a>}) | ]
-	[(#ENV{order}|match{score}|?{<strong>par pertinence</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,score})]">par pertinence</a>}) | ]
-	[(#ENV{order}|match{date}|?{<strong>par date</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,date})]">par date</a>}) | ]
+	[(#ENV{order}|match{score}|?{<strong>par pertinence</strong>,[<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,score})]">(#ENV{recherche}|?{par pertinence})</a>]}) | ]
+	[(#ENV{order}|match{date}|?{<strong>par date</strong>,[<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,date})]">(#ENV{recherche}|?{par date})</a>]}) | ]
 	[(#ENV{order}|match{stars}|?{<strong>par popularité</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,stars})]">par popularité</a>})]
 	</small></p>
 
@@ -236,6 +247,7 @@ aside#droite .effectif {
 	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
 	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
 	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
 	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
 	{filter #GET{-share},  'IN(properties.share, @valeurs)'}
 	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
