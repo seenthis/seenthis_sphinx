@@ -1,9 +1,11 @@
 <?php
 
-if ($_GET['page'] == 'sphinx' AND isset($_REQUEST['recherche'])) {
-  $_GET['var_recherche'] = preg_replace(',\W+,u',' ',$_REQUEST['recherche']);
+if (in_array($_GET['page'], array('sphinx','recherche'))
+AND isset($_REQUEST['recherche'])) {
+  $_GET['var_recherche'] = trim(preg_replace(',\W+,u',' ',$_REQUEST['recherche']));
 }
 
+// nom de l'index pour l'enregistrement des donnees
 defined('_SPHINXQL_INDEX') || define('_SPHINXQL_INDEX', 'seenthisrt');
 
 function seenthissphinx_indexer_me($t) {

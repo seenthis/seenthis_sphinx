@@ -6,18 +6,31 @@
 	<form id="sphinxsearch" method="get" action="http://seenthis.net/recherche">
 		<h1>[<:info_rechercher_02:>(#ENV{recherche_initiale}|sinon{#ENV{recherche}}|oui)]
 		<input type="text" name="recherche" value="#RECHERCHE" placeholder="rechercher…" />
+
+		<BOUCLE_filtres1(DATA)
+			{liste, annee,login,follow,tag,oc}
+		>[<input type="hidden" name="#VALEUR" value="(#ENV{#VALEUR})" />
+		]</BOUCLE_filtres1>
+
 		<input type="submit" value="•" />
 		</h1>
 </form>
+
+[(#SET{self,[(#SELF
+	|parametre_url{recherche,#RECHERCHE*}
+	|parametre_url{debut_messages,''}
+	|parametre_url{tag,#TAG*}
+	|parametre_url{login,#LOGIN*}
+	|parametre_url{annee,#ANNEE}
+	|parametre_url{oc,#OC*}
+)]})]
 
 <B_filtres>
 	<p>Filtres :
 <BOUCLE_filtres(DATA)
 	{liste, annee,login,follow,tag,oc}
 >[(#ENV{#VALEUR}|oui)
-	[(#VALEUR|match{follow|login}|?{@})][(#ENV{#VALEUR}|match{^#})]<a href="[(#SELF
-		|parametre_url{recherche,#ENV*{recherche}}
-		|parametre_url{debut_messages,''}
+	[(#VALEUR|match{follow|login}|?{@})][(#ENV{#VALEUR}|match{^#})]<a href="[(#GET{self}
 		|parametre_url{#VALEUR,''}
 	)]" style="text-decoration:none;">[(#ENV{#VALEUR}|replace{^#})]</a>
 ]</BOUCLE_filtres>
@@ -26,11 +39,11 @@
 
 		[(#SESSION{id_auteur}|oui)
 		<div class="limite_date">
-		<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{follow,#SESSION{login}})]"[(#ENV{follow}|=={#SESSION{login}}|oui)class="actif"]>Mes messages</a>
+		<a href="[(#GET{self}|parametre_url{follow,#SESSION{login}})]"[(#ENV{follow}|=={#SESSION{login}}|oui)class="actif"]>Mes messages</a>
 		|
-		<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{follow,''})]"[(#ENV{follow}|non)class="actif"]>Messages de mon r&#233;seau</a>
+		<a href="[(#GET{self}|parametre_url{follow,''})]"[(#ENV{follow}|non)class="actif"]>Messages de mon r&#233;seau</a>
 		|
-		<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{follow,all})]"[(#ENV{follow}|=={all}|oui)class="actif"]>Tous les messages</a>
+		<a href="[(#GET{self}|parametre_url{follow,all})]"[(#ENV{follow}|=={all}|oui)class="actif"]>Tous les messages</a>
 
 		[(#ENV{follow}|in_array{#LISTE{#SESSION{login},all}}|non)[
 			| <a class="actif">Les messages de @(#ENV{follow})</a>
@@ -67,8 +80,6 @@ aside.tri p {
 #bookmarklet h2 { display: none; }
 #bookmarklet h3 { margin-top: 10px; }
 
-#sphinxquery { display: none; }
-
 aside#droite ul:after { }
 
 aside#droite li.item { }
@@ -88,6 +99,10 @@ border: solid 1px #ccc;
 }
 #sphinxsearch input[type=submit] {
 position: absolute; left: -999px;
+}
+
+.sphinxmessage {
+	padding: 20px 40px;
 }
 
 </style>
@@ -171,9 +186,9 @@ position: absolute; left: -999px;
 
 
 	<div class='liste long resultats'>
-		[<p>(#SPHINX_MESSAGE)</p>]
+		[<p class="sphinxmessage">(#SPHINX_MESSAGE)</p>]
 
-		[<div class="pagination">(#PAGINATION)</div>]
+		[<div id="pagination_haut" class="pagination">(#PAGINATION)</div>]
 
 		<ul class='liste-items'>
 
@@ -213,18 +228,27 @@ position: absolute; left: -999px;
 
 	[<div class="pagination">(#PAGINATION)</div>]
 
-	[<div id="sphinxquery"><tt>(#SPHINX_QUERY)</tt></div>]
-
 
 </B_messages>
-	<h2>Pas de résultat pour : [(#ENV{recherche_initiale}|sinon{#ENV{recherche}})]</h2>
+
+	<div class="sphinxmessage">
+
+	<h2>Aucun résultat</h2>
 
 	[<p>(#SPHINX_MESSAGE)</p>]
 
+	#SET{meta,#SPHINX_META}
 
-	[<div id="sphinxquery"><tt>(#SPHINX_QUERY)</tt>
-		[(#INCLURE{fond=liste/sphinx_metas,meta=#SPHINX_META,env})]
-	</div>]
+	<B_meta>
+	<p>Aucune occurrence [(#TOTAL_BOUCLE|<{2}|?{du mot-clé,des mots-clés})] :
+	<BOUCLE_meta(DATA){source table,(#GET{meta}|table_valeur{keywords})}>[
+		<del>(#VALEUR|table_valeur{docs}|=={0}|?{#CLE})</del>
+	]</BOUCLE_meta>
+	</p>
+	</B_meta>
+
+
+	</div>
 
 
 <//B_messages>

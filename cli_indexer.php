@@ -21,6 +21,6 @@ include_spip('indexer_sphinx');
 
 seenthis_indexer_tout( ) ;
 #seenthis_indexer_un(14) ;
-#seenthis_indexer_recent(86400);
+#seenthis_indexer_recent(2*3600);
 
 echo spip_timer('indexer'),"\n";

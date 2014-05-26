@@ -1,3 +1,12 @@
+[(#SET{self,[(#SELF
+	|parametre_url{recherche,#RECHERCHE*}
+	|parametre_url{debut_messages,''}
+	|parametre_url{tag,#TAG*}
+	|parametre_url{login,#LOGIN*}
+	|parametre_url{annee,#ANNEE}
+	|parametre_url{oc,#OC*}
+)]})]
+
 <B_facettes>
     <div class='row-fluid'>
 <BOUCLE_facettes(DATA){source tableau, #FACETS}><B_liste_facettes>
@@ -12,15 +21,12 @@
             <ul class='liste-items'>
         <BOUCLE_liste_facettes(DATA){source tableau, #VALEUR}{cle>''}{valeur>1}>[(#TOTAL_BOUCLE|>{1}|oui)
                 <li class='item'>[(#ENV{[(#_facettes:CLE)]}|=={#CLE}|?{
-                	<a href="[(#SELF
-			|parametre_url{recherche,#ENV*{recherche}}
-			|parametre_url{debut_messages,''}
+                	<a href="[(#GET{self}
 			|parametre_url{#_facettes:CLE,''}
 			)]" style="text-decoration:none;">&times;</a> [(#_facettes:CLE|=={follow}|?{@})][(#CLE|match{^#})]<strong>[(#CLE|replace{^#})]</strong>
 				[<span class="effectif">((#VALEUR)[ (#VAL{messages}|unique{#_facettes:CLE})])</span>]
                 ,
-                	<span>  </span> [(#_facettes:CLE|=={follow}|?{@})][(#CLE|match{^#})]<a href="[(#SELF
-                	|parametre_url{recherche,#ENV*{recherche}}
+                	<span>  </span> [(#_facettes:CLE|=={follow}|?{@})][(#CLE|match{^#})]<a href="[(#GET{self}
                 	|parametre_url{[(#_facettes:CLE)],#CLE})]">[(#CLE|replace{^#})]</a>
                 	[<span class="effectif">((#VALEUR)[ (#VAL{messages}|unique{#_facettes:CLE})])</span>]
                 })]</li>
