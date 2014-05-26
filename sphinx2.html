@@ -3,11 +3,11 @@
 	<div id="entete_people">
 
 	
-		<h1>[<:info_rechercher_02:> (#ENV{recherche_initiale}|sinon{#ENV{recherche}})]</h1>
-
-
-<form method="get" action="http://seenthis.net/recherche">
-<input type="text" name="recherche" value="#RECHERCHE" placeholder="rechercher…" /><input type="submit" value="recherche sur seenthis/sphinx" />
+	<form id="sphinxsearch" method="get" action="http://seenthis.net/recherche">
+		<h1>[<:info_rechercher_02:>(#ENV{recherche_initiale}|sinon{#ENV{recherche}}|oui)]
+		<input type="text" name="recherche" value="#RECHERCHE" placeholder="rechercher…" />
+		<input type="submit" value="•" />
+		</h1>
 </form>
 
 <B_filtres>
@@ -16,7 +16,7 @@
 	{liste, annee,login,follow,tag,oc}
 >[(#ENV{#VALEUR}|oui)
 	[(#VALEUR|match{follow|login}|?{@})][(#ENV{#VALEUR}|match{^#})]<a href="[(#SELF
-		|parametre_url{recherche,#ENV{recherche}}
+		|parametre_url{recherche,#ENV*{recherche}}
 		|parametre_url{debut_messages,''}
 		|parametre_url{#VALEUR,''}
 	)]" style="text-decoration:none;">[(#ENV{#VALEUR}|replace{^#})]</a>
@@ -75,6 +75,19 @@ aside#droite li.item { }
 
 aside#droite .effectif {
 	font-size: 80%;
+}
+
+#sphinxsearch input[type=text] {
+border: solid 1px transparent;
+font-weight: bold;
+display: inline-block;
+width: auto;
+}
+#sphinxsearch input[type=text]:focus {
+border: solid 1px #ccc;
+}
+#sphinxsearch input[type=submit] {
+position: absolute; left: -999px;
 }
 
 </style>
