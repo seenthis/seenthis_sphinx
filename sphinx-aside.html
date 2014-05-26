@@ -1,0 +1,77 @@
+
+	<aside id="droite">
+
+	<div id="bookmarklet">
+
+<BOUCLE_f_annee(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{-annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #ENV{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #ENV{share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{facet annee, 'YEAR(date) ORDER BY FACET() DESC'}
+	{0,1}
+	{filter 1, properties.objet='me' AND properties.published=1}
+>[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
+</BOUCLE_f_annee>
+
+<BOUCLE_f_author(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #ENV{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #ENV{-share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{facet follow, 'properties.login ORDER BY COUNT(*) DESC'}
+	{0,1}
+	{filter 1, properties.objet='me' AND properties.published=1}
+>[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
+</BOUCLE_f_author>
+
+<BOUCLE_f_tag(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{-tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #ENV{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #ENV{share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{facet tag, 'properties.tags ORDER BY COUNT(*) DESC'}
+	{0,1}
+	{filter 1, properties.objet='me' AND properties.published=1}
+>[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
+</BOUCLE_f_tag>
+
+<BOUCLE_f_oc(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter #ENV{annee},  'YEAR(date) = @valeur' }
+	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{-oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
+	{filter #ENV{author}, 'IN(properties.authors, @valeurs)'}
+	{filter #ENV{share},  'IN(properties.share, @valeurs)'}
+	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
+	{facet oc, 'properties.oc ORDER BY COUNT(*) DESC'}
+	{0,1}
+	{filter 1, properties.objet='me' AND properties.published=1}
+>[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
+</BOUCLE_f_oc>
+
+	</div>
+
+	</aside>
+	

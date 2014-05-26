@@ -1,5 +1,5 @@
-[(#SET{self,[(#SELF
-	|parametre_url{recherche,#RECHERCHE*}
+[(#SET{self,[(#ENV*{base}|url_absolue
+	|parametre_url{recherche,#ENV*{recherche}}
 	|parametre_url{debut_messages,''}
 	|parametre_url{tag,#TAG*}
 	|parametre_url{login,#LOGIN*}

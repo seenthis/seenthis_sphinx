@@ -16,7 +16,7 @@
 		</h1>
 </form>
 
-[(#SET{self,[(#SELF
+[(#SET{base,[(#SELF
 	|parametre_url{recherche,#RECHERCHE*}
 	|parametre_url{debut_messages,''}
 	|parametre_url{tag,#TAG*}
@@ -30,7 +30,7 @@
 <BOUCLE_filtres(DATA)
 	{liste, annee,login,follow,tag,oc}
 >[(#ENV{#VALEUR}|oui)
-	[(#VALEUR|match{follow|login}|?{@})][(#ENV{#VALEUR}|match{^#})]<a href="[(#GET{self}
+	[(#VALEUR|match{follow|login}|?{@})][(#ENV{#VALEUR}|match{^#})]<a href="[(#GET{base}
 		|parametre_url{#VALEUR,''}
 	)]" style="text-decoration:none;">[(#ENV{#VALEUR}|replace{^#})]</a>
 ]</BOUCLE_filtres>
@@ -39,11 +39,11 @@
 
 		[(#SESSION{id_auteur}|oui)
 		<div class="limite_date">
-		<a href="[(#GET{self}|parametre_url{follow,#SESSION{login}})]"[(#ENV{follow}|=={#SESSION{login}}|oui)class="actif"]>Mes messages</a>
+		<a href="[(#GET{base}|parametre_url{follow,#SESSION{login}})]"[(#ENV{follow}|=={#SESSION{login}}|oui)class="actif"]>Mes messages</a>
 		|
-		<a href="[(#GET{self}|parametre_url{follow,''})]"[(#ENV{follow}|non)class="actif"]>Messages de mon r&#233;seau</a>
+		<a href="[(#GET{base}|parametre_url{follow,''})]"[(#ENV{follow}|non)class="actif"]>Messages de mon r&#233;seau</a>
 		|
-		<a href="[(#GET{self}|parametre_url{follow,all})]"[(#ENV{follow}|=={all}|oui)class="actif"]>Tous les messages</a>
+		<a href="[(#GET{base}|parametre_url{follow,all})]"[(#ENV{follow}|=={all}|oui)class="actif"]>Tous les messages</a>
 
 		[(#ENV{follow}|in_array{#LISTE{#SESSION{login},all}}|non)[
 			| <a class="actif">Les messages de @(#ENV{follow})</a>
@@ -108,10 +108,6 @@ position: absolute; left: -999px;
 </style>
 
 
-#SET{tri,
-	"INTERVAL(date, NOW()-90*86400, NOW()-30*86400, NOW()-7*86400, NOW()-86400, NOW()-3600) AS tri"
-}
-
 <BOUCLE_identifier_follow(AUTEURS)
 	{login IN #GET{follow}}
 	{si #GET{follow}}
@@ -127,24 +123,9 @@ position: absolute; left: -999px;
 <//B_identifier_follow>
 
 
-<BOUCLE_max_sphinx(SPHINX)
-	{index seenthis}
-	{recherche #ENV*{recherche}}
-	{filter #ENV{annee},  'YEAR(date) = @valeur' }
-	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.oc) = 0'}
-	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.url) = 0'}
-	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
-	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
-	{filter #GET{share},  'IN(properties.share, @valeurs)'}
-	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
-	{filter 1, properties.objet='me' AND properties.published=1}
-	{0,1}
->#SET{max,#SCORE}</BOUCLE_max_sphinx>
-
-
-<aside class="tri">
-
+	#SET{tri,
+	"INTERVAL(date, NOW()-90*86400, NOW()-30*86400, NOW()-7*86400, NOW()-86400, NOW()-3600) AS tri"
+	}
 	[(#ENV{order}|match{date}|?{
 		[(#SET{tri,date AS tri})]
 	})]
@@ -156,7 +137,14 @@ position: absolute; left: -999px;
 	})]
 
 
-	[(#SPHINX_META|table_valeur{total}|>{10}|oui)
+
+
+<B_messages>
+
+
+<aside class="tri">
+
+	[(#GRAND_TOTAL|>{10}|oui)
 	<p>
 	<small>
 	[(#ENV{order}|non|?{<strong>Tri naturel</strong>,<a href="[(#SELF|parametre_url{debut_messages,''}|parametre_url{order,''})]">Tri naturel</a>}) | ]
@@ -170,17 +158,15 @@ position: absolute; left: -999px;
 
 </aside>
 
-<//B_max_sphinx>
 
 
-	</div>
+	</div><!-- /#entete_people -->
 
 
 
 	<div id="centre">
 
 
-<B_messages>
 
 <ul id=messages>
 
@@ -231,6 +217,10 @@ position: absolute; left: -999px;
 
 </B_messages>
 
+
+	</div><!-- /#entete_people -->
+	<div id="centre">
+
 	<div class="sphinxmessage">
 
 	<h2>Aucun résultat</h2>
@@ -255,80 +245,10 @@ position: absolute; left: -999px;
 
 </ul>
    </div>
-	
-	<aside id="droite">
 
-	<div id="bookmarklet">
 
-<BOUCLE_f_annee(SPHINX)
-	{index seenthis}
-	{recherche #ENV*{recherche}}
-	{filter #ENV{-annee},  'YEAR(date) = @valeur' }
-	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
-	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
-	{filter #GET{share},  'IN(properties.share, @valeurs)'}
-	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
-	{facet annee, 'YEAR(date) ORDER BY FACET() DESC'}
-	{0,1}
-	{filter 1, properties.objet='me' AND properties.published=1}
->[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
-</BOUCLE_f_annee>
+[(#INCLURE{fond=sphinx-aside}
+	{env}{share=#GET{share}}{author=#GET{author}}{base=#GET{base}}
+	{ajaxload}
+)]
 
-<BOUCLE_f_author(SPHINX)
-	{index seenthis}
-	{recherche #ENV*{recherche}}
-	{filter #ENV{annee},  'YEAR(date) = @valeur' }
-	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
-	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
-	{filter #GET{-share},  'IN(properties.share, @valeurs)'}
-	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
-	{facet follow, 'properties.login ORDER BY COUNT(*) DESC'}
-	{0,1}
-	{filter 1, properties.objet='me' AND properties.published=1}
->[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
-</BOUCLE_f_author>
-
-<BOUCLE_f_tag(SPHINX)
-	{index seenthis}
-	{recherche #ENV*{recherche}}
-	{filter #ENV{annee},  'YEAR(date) = @valeur' }
-	{filter #ENV{-tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
-	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
-	{filter #GET{share},  'IN(properties.share, @valeurs)'}
-	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
-	{facet tag, 'properties.tags ORDER BY COUNT(*) DESC'}
-	{0,1}
-	{filter 1, properties.objet='me' AND properties.published=1}
->[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
-</BOUCLE_f_tag>
-
-<BOUCLE_f_oc(SPHINX)
-	{index seenthis}
-	{recherche #ENV*{recherche}}
-	{filter #ENV{annee},  'YEAR(date) = @valeur' }
-	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{-oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
-	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
-	{filter #GET{share},  'IN(properties.share, @valeurs)'}
-	{filter #ENV{stars},  '@valeur < LENGTH(properties.share)'}
-	{facet oc, 'properties.oc ORDER BY COUNT(*) DESC'}
-	{0,1}
-	{filter 1, properties.objet='me' AND properties.published=1}
->[(#INCLURE{fond=liste/sphinx_facettes,facets=#SPHINX_FACETS,env})]
-</BOUCLE_f_oc>
-
-	</div>
-
-	</aside>
-	
