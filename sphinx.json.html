@@ -17,5 +17,9 @@
 	|array_intersect_key{#ARRAY{uri,1,title,1,tags,1,u,1,s,1,snippet,1,ts,1}}
 	|json_encode)]</BOUCLE_messages>
 	],
-	"meta":[(#SPHINX_META|json_encode)]
-</B_messages>}
+	"meta":[(#SPHINX_META|json_encode)][,
+	"message":(#SPHINX_MESSAGE|?{#SPHINX_MESSAGE|json_encode})]
+</B_messages>
+	"meta":[(#SPHINX_META|json_encode)][,
+	"message":(#SPHINX_MESSAGE|?{#SPHINX_MESSAGE|json_encode})]
+<//B_messages>}
