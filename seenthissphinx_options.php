@@ -15,7 +15,9 @@ function seenthissphinx_indexer_me($t) {
 		);
 	else
 		$id_me = $t;
-	job_queue_add('indexer_sphinx', 'Indexer sphinx '.$t, array($t), 'indexer_sphinx', true);
+
+	spip_log('job_queue_add indexer'.$id_me, 'sphinx');
+	job_queue_add('indexer_sphinx', 'Indexer sphinx '.$id_me, array($id_me), 'indexer_sphinx', true);
 }
 
 
@@ -28,8 +30,7 @@ function sphinx_retraiter_env($env, $quoi) {
 		$e['recherche_initiale'] = $e['recherche'];
 
 		if (preg_match(',\bhttps?://\S+,iu', $e['recherche'], $r)) {
-			if (!isset($e['url'])) $e['url'] = rtrim($r[0], '/');
-			$e['recherche'] = str_replace($r[0], ' ', $e['recherche']);
+			$e['recherche'] = str_replace($r[0], seenthissphinx_normaliser_url($r[0]), $e['recherche']);
 		}
 
 		if (preg_match(',\#\S+,iu', $e['recherche'], $r)) {
@@ -50,3 +51,16 @@ function sphinx_retraiter_env($env, $quoi) {
 
 	return $e[$quoi];
 }
+
+// transforme une URL en httprezonet pour pouvoir l'indexer sans tuer
+// les mots "rezo" ou "net" ; ˆ utiliser aussi sur la query utilisateur
+// s'applique ˆ $u ou ˆ $r=[ match, É ] d'un preg_replace_callback
+function seenthissphinx_normaliser_url($u) {
+	if (is_array($u)) $u = array_shift($u);
+
+	$u = preg_replace(',^(http|ftp)s?://(www\.)?(.*),i', '\\1-\\3', $u);
+	$u = preg_replace(',\W+,u', '', $u);
+
+	return "$u*";
+}
+

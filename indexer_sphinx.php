@@ -138,9 +138,11 @@ function seenthis_indexer_conditionnel($where = '1=0') {
 				$b['properties'][$k] = $v;
 		}
 
-		// supprimer les liens, on ne veut pas les indexer dans le fulltext
-		$b['content'] = preg_replace("/"._REG_URL."/ui", ' ', $b['content']);
-		$b['summary'] = preg_replace("/"._REG_URL."/ui", ' ', $b['summary']);
+		// normaliser les liens, on ne veut pas les indexer dans le fulltext
+		if (function_exists('seenthissphinx_normaliser_url')) {
+			foreach(array('title','content','summary') as $k)
+				$b[$k] = preg_replace_callback("/"._REG_URL."/uiS", 'seenthissphinx_normaliser_url', $b[$k]);
+		}
 
 		$b['properties'] = json_encode($b['properties']);
 
@@ -155,8 +157,9 @@ function seenthis_indexer_conditionnel($where = '1=0') {
 		$a = sphinxql_query($query);
 	
 		if (defined('_CLI_') AND _CLI_) {
-		        echo $a ? "+" : "-",$b['title'],' ', $b['uri'],"\n";
-                }
+			echo $a ? "+" : "-",$b['title'],' ', $b['uri'],"\n";
+			if (defined('_CLI_DEBUG') AND _CLI_DEBUG) echo $query,"\n";
+		}
 
 	}
 

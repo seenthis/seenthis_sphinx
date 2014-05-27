@@ -19,8 +19,21 @@ spip_timer('indexer');
 
 include_spip('indexer_sphinx');
 
-seenthis_indexer_tout( ) ;
-#seenthis_indexer_un(14) ;
-#seenthis_indexer_recent(2*3600);
+$command = $argv[1];
+
+if (in_array('debug', $argv)) define ('_CLI_DEBUG', true);
+
+switch(true) {
+	case $command == 'tout':
+		seenthis_indexer_tout();
+		break;
+	case $id_me = intval($command):
+		seenthis_indexer_un($id_me);
+		break;
+	case $command == 'recents':
+	default:
+		seenthis_indexer_recent(2*3600);
+		break;
+}
 
 echo spip_timer('indexer'),"\n";
