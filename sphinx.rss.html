@@ -1,0 +1,45 @@
+[(#HTTP_HEADER{Content-type: text/xml[; charset=(#CHARSET)]})]<?xml 
+version="1.0"[ encoding="(#CHARSET)"]?>
+<rss version="2.0" [(#REM) rss 2.0.9)]
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:content="http://purl.org/rss/1.0/modules/content/"
+ xmlns:atom="http://www.w3.org/2005/Atom"
+>
+
+<channel[ xml:lang="(#LANG)"]>
+	<title>[(#RECHERCHE|textebrut|texte_backend)][ - (#NOM_SITE_SPIP|textebrut|texte_backend)]</title>
+	<link>#URL_SITE_SPIP/</link>
+	<language>#LANG</language>
+	<generator>SPIP - www.spip.net</generator>
+	<description>[«(#RECHERCHE|textebrut|texte_backend)»][ @ (#NOM_SITE_SPIP|textebrut|texte_backend)]</description>
+	[<atom:link href="(#SELF|url_absolue)" rel="self" type="application/rss+xml" />]
+
+#SET{tseg,
+"INTERVAL(date, 0,NOW()-90*86400, NOW()-30*86400, NOW()-7*86400, NOW()-86400, NOW()-3600)*WEIGHT() AS s"
+}
+<BOUCLE_messages(SPHINX)
+	{index seenthis}
+	{recherche #ENV*{recherche}}
+	{filter 1, 'properties.published=1'}
+	{select uri,title,properties.tags as tags,properties.login as u,date AS t}
+	{select #GET{tseg}}
+	{!par s}
+><item[ xml:lang="(#LANG)"]>
+	<title>[(#TITLE|supprimer_tags|texte_backend)]</title>
+	<link>[(#URI|url_absolue)]</link>
+	[<guid isPermaLink="true">(#URI|url_absolue)</guid>]
+	[<dc:date>(#VAL{Y-m-d H:i:s}|date{[(#VALEUR|table_valeur{t})]}|date_iso)</dc:date>]
+
+	[<dc:creator>(#VALEUR|table_valeur{u}|supprimer_tags|texte_backend)</dc:creator>]
+
+	[<description>(#SNIPPET|texte_backend)</description>]
+
+</item>
+
+</BOUCLE_messages>
+
+</B_messages>
+
+</channel>
+
+</rss>
