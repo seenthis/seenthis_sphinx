@@ -58,7 +58,7 @@
 
 	[(#SET{follow,#ENV{follow}})]
 	[(#SESSION{id_auteur}|non)
-		[(#SET{follow,all})]
+		[(#SET{follow,#ENV{follow,all}})]
 	]
 	
 	[(#ENV{age}|oui)
@@ -90,6 +90,7 @@ aside#droite .effectif {
 
 #sphinxsearch input[type=text] {
 border: solid 1px transparent;
+border-bottom: dashed 1px #ccc;
 font-weight: bold;
 display: inline-block;
 width: auto;
@@ -247,8 +248,8 @@ position: absolute; left: -999px;
    </div>
 
 
-[(#INCLURE{fond=sphinx-aside}
-	{env}{share=#GET{share}}{author=#GET{author}}{base=#GET{base}}
+<INCLURE{fond=sphinx-aside}
+	{env}
+	{share=#GET*{share}}{author=#GET*{author}}{base=#GET*{base}}
 	{ajaxload}
-)]
-
+/>
