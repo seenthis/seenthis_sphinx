@@ -14,7 +14,9 @@
 	{!par s}
 >		[(#VALEUR
 	|array_merge{[(#ARRAY{ts,[(#VAL{Y-m-d H:i:s}|date{[(#VALEUR|table_valeur{t})]})]})]}
+	|array_merge{[(#ARRAY{tags,[(#VALEUR|table_valeur{tags}|json_decode{1})]})]}
 	|array_intersect_key{#ARRAY{uri,1,title,1,tags,1,u,1,s,1,snippet,1,ts,1}}
+	|array_filter
 	|json_encode)]</BOUCLE_messages>
 	],
 	"meta":[(#SPHINX_META|json_encode)][,
