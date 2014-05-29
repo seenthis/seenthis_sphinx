@@ -3,6 +3,10 @@
 
 	<div id="bookmarklet">
 
+	<BOUCLE_aide(ARTICLES){titre==moteur de recherche}{0,1}>
+	<p style="text-align:right;"><a href="#URL_ARTICLE" target="_blank">Aide</a></p>
+	</BOUCLE_aide>
+
 <BOUCLE_f_annee(SPHINX)
 	{index seenthis}
 	{recherche #ENV*{recherche}}
