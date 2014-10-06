@@ -6,7 +6,7 @@ AND isset($_REQUEST['recherche'])) {
 }
 
 // nom de l'index pour l'enregistrement des donnees
-defined('_SPHINXQL_INDEX') || define('_SPHINXQL_INDEX', 'seenthisrt');
+defined('_SPHINXQL_INDEX') || define('_SPHINXQL_INDEX', 'seenthis');
 
 function seenthissphinx_indexer_me($t) {
 	if (is_array($t))

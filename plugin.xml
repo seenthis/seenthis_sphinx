@@ -1,7 +1,7 @@
 <plugin>
 	<nom>Seenthis - Sphinx</nom>
 	<auteur>Fil</auteur>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<etat>dev</etat>
 	<description>
 		Sphinx pour Seenthis
@@ -16,7 +16,7 @@
 	</pipeline>
 
 	<pipeline>
-		<nom>cache_me</nom>
+		<nom>cache_message</nom>
 		<action>indexer_me</action>
 		<inclure>seenthissphinx_options.php</inclure>
 	</pipeline>

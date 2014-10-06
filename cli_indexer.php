@@ -32,7 +32,7 @@ switch(true) {
 		break;
 	case $command == 'recents':
 	default:
-		seenthis_indexer_recent(2*3600);
+		seenthis_indexer_recent(30*24*3600);
 		break;
 }
 

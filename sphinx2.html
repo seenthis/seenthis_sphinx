@@ -200,13 +200,18 @@ position: absolute; left: -999px;
 
 	{filter 1, properties.objet='me' AND properties.published=1}
 
-	{pagination 20}
+	{pagination (#ENV{vue}|?{100,20})}
 >
 	#SET{id,#PROPERTIES|json_decode{1}|table_valeur{id_objet}}
 	<li class='item' id="message#GET{id}">
+	[(#ENV{vue}|oui)
+		[(#SET{prop,[(#PROPERTIES*|json_decode{1})]})]
+		<INCLURE{fond=noisettes/sphinxshort,prop=#GET*{prop},valeur=#VALEUR*} />
+	][(#ENV{vue}|non)
 	[<div class="surlignable">
 		(#GET{id}|microcache{noisettes/afficher_message})
 	</div>]
+	]
 	</li>
 
 </BOUCLE_messages>
