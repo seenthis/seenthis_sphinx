@@ -4,7 +4,7 @@
 defined('_SPHINXQL_HOST') || define('_SPHINXQL_HOST', '127.0.0.1');
 defined('_SPHINXQL_MODE') || define('_SPHINXQL_MODE', 'sphinxql');
 defined('_SPHINXQL_INDEX') || define('_SPHINXQL_INDEX', 'testrt');
-defined('SPHINX_SERVER_PORT') || define('SPHINX_SERVER_PORT', 19306);
+defined('SPHINX_SERVER_PORT') || define('SPHINX_SERVER_PORT', 9306);
 
 /**
  * Démarrer une connexion sur le serveur sphinxql
