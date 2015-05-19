@@ -8,7 +8,7 @@
 	</BOUCLE_aide>
 
 <BOUCLE_f_annee(SPHINX)
-	{index seenthis}
+	
 	{recherche #ENV*{recherche}}
 	{filter #ENV{-annee},  'YEAR(date) = @valeur' }
 	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
@@ -25,7 +25,7 @@
 </BOUCLE_f_annee>
 
 <BOUCLE_f_author(SPHINX)
-	{index seenthis}
+	
 	{recherche #ENV*{recherche}}
 	{filter #ENV{annee},  'YEAR(date) = @valeur' }
 	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
@@ -42,7 +42,7 @@
 </BOUCLE_f_author>
 
 <BOUCLE_f_tag(SPHINX)
-	{index seenthis}
+	
 	{recherche #ENV*{recherche}}
 	{filter #ENV{annee},  'YEAR(date) = @valeur' }
 	{filter #ENV{-tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
@@ -59,7 +59,7 @@
 </BOUCLE_f_tag>
 
 <BOUCLE_f_oc(SPHINX)
-	{index seenthis}
+	
 	{recherche #ENV*{recherche}}
 	{filter #ENV{annee},  'YEAR(date) = @valeur' }
 	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}

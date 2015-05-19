@@ -3,7 +3,7 @@
 	<div id="entete_people">
 
 	
-	<form id="sphinxsearch" method="get" action="http://seenthis.net/recherche">
+	<form id="sphinxsearch" method="get" action="./recherche">
 		<h1>[<:info_rechercher_02:>(#ENV{recherche_initiale}|sinon{#ENV{recherche}}|oui)]
 		<input type="text" name="recherche" value="#RECHERCHE" placeholder="rechercher…" />
 
@@ -180,7 +180,6 @@ position: absolute; left: -999px;
 		<ul class='liste-items'>
 
 <BOUCLE_messages(SPHINX)
-	{index seenthis}
 	{recherche #ENV*{recherche}}
 
 	{select *}

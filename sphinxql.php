@@ -4,6 +4,7 @@
 defined('_SPHINXQL_HOST') || define('_SPHINXQL_HOST', '127.0.0.1');
 defined('_SPHINXQL_MODE') || define('_SPHINXQL_MODE', 'sphinxql');
 defined('_SPHINXQL_INDEX') || define('_SPHINXQL_INDEX', 'testrt');
+defined('SPHINX_SERVER_PORT') || define('SPHINX_SERVER_PORT', 19306);
 
 /**
  * Démarrer une connexion sur le serveur sphinxql
@@ -11,7 +12,7 @@ defined('_SPHINXQL_INDEX') || define('_SPHINXQL_INDEX', 'testrt');
 function sphinxql_connect() {
 	static $connection;
 
-	if (!isset($connection)) $connection = mysqli_connect(_SPHINXQL_HOST, null, null, null, 9306);
+	if (!isset($connection)) $connection = mysqli_connect(_SPHINXQL_HOST, null, null, null, SPHINX_SERVER_PORT);
 
 	return $connection;
 }

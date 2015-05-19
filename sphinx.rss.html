@@ -18,7 +18,7 @@ version="1.0"[ encoding="(#CHARSET)"]?>
 "INTERVAL(date, 0,NOW()-90*86400, NOW()-30*86400, NOW()-7*86400, NOW()-86400, NOW()-3600)*WEIGHT() AS s"
 }
 <BOUCLE_messages(SPHINX)
-	{index seenthis}
+	
 	{recherche #ENV*{recherche}}
 	{filter 1, 'properties.published=1'}
 	{select uri,title,properties.tags as tags,properties.login as u,date AS t}
