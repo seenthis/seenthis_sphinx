@@ -35,7 +35,7 @@ function sphinx_retraiter_env($env, $quoi) {
 
 		if (preg_match(',\#\S+,iu', $e['recherche'], $r)) {
 			if (!isset($e['tag'])) {
-				$e['tag'] = mb_strtolower($r[0]);
+				$e['tag'] = mb_strtolower($r[0], 'utf8');
 				$e['recherche'] = str_replace($r[0], ' ', $e['recherche']);
 			}
 		}
