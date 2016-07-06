@@ -95,7 +95,7 @@ function seenthis_indexer_conditionnel($where = '1=0') {
 		'title' => ($t['statut'] == 'publi')
 			? seenthis_titre_me($t['texte'])
 			: '',
-		'uri' => 'http://' . _HOST . '/messages/'.$t['id_me'],
+		'uri' => _HTTPS . '://' . _HOST . '/messages/'.$t['id_me'],
 		'summary' => '@'.$t['login'].': '.$t['texte'],
 		'date' => strtotime($t['date']),
 		'content' => ($t['statut'] == 'publi')
