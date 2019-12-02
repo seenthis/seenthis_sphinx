@@ -186,9 +186,9 @@ position: absolute; left: -999px;
 	{select #GET{tri}}
 
 	{filter #ENV{annee},  'YEAR(date) = @valeur' }
-	{filter #ENV{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
-	{filter #ENV{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV*{tag},    'IN(properties.tags, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV*{oc},    'IN(properties.oc, @valeurs)',    'LENGTH(properties.tags) = 0'}
+	{filter #ENV*{url},    'IN(properties.url, @valeurs)',    'LENGTH(properties.tags) = 0'}
 	{filter #ENV{login}, 'IN(properties.login, @valeurs)'}
 	{filter #GET{author}, 'IN(properties.authors, @valeurs)'}
 	{filter #GET{share},  'IN(properties.share, @valeurs)'}
