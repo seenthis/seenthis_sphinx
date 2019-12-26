@@ -4,6 +4,7 @@ if (isset($_SERVER['HTTP_HOST']))
   die('ce script ne fonctionne qu\'en ligne de commande');
 
 define('_CLI_', true);
+define('_HTTPS', 'https'); ## seenthis
 
 date_default_timezone_set('Europe/Paris');
 

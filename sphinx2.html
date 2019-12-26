@@ -201,10 +201,10 @@ position: absolute; left: -999px;
 
 	{pagination (#ENV{vue}|?{100,20})}
 >
-	#SET{id,#PROPERTIES|json_decode{1}|table_valeur{id_objet}}
+	#SET{id,#PROPERTIES|table_valeur{id_objet}}
 	<li class='item' id="message#GET{id}">
 	[(#ENV{vue}|oui)
-		[(#SET{prop,[(#PROPERTIES*|json_decode{1})]})]
+		[(#SET{prop,[(#PROPERTIES*)]})]
 		<INCLURE{fond=noisettes/sphinxshort,prop=#GET*{prop},valeur=#VALEUR*} />
 	][(#ENV{vue}|non)
 	[<div class="surlignable">
