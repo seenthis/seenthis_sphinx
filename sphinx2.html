@@ -5,7 +5,7 @@
 	
 	<form id="sphinxsearch" method="get" action="./recherche">
 		<h1>[<:info_rechercher_02:>(#ENV{recherche_initiale}|sinon{#ENV{recherche}}|oui)]
-		<input type="text" name="recherche" value="#RECHERCHE" placeholder="rechercher…" />
+		<input type="text" name="recherche" value="#ENV{recherche}" placeholder="rechercher…" />
 
 		<BOUCLE_filtres1(DATA)
 			{liste, annee,login,follow,tag,oc}
@@ -17,7 +17,7 @@
 </form>
 
 [(#SET{base,[(#SELF
-	|parametre_url{recherche,#RECHERCHE*}
+	|parametre_url{recherche,#ENV*{recherche}}
 	|parametre_url{debut_messages,''}
 	|parametre_url{tag,#TAG*}
 	|parametre_url{login,#LOGIN*}
