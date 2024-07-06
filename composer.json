@@ -1,0 +1,27 @@
+{
+    "name": "seenthis/sphinx",
+    "description": "Sphinx pour Seenthis",
+    "license": "GPL-3.0-or-later",
+    "type": "spip-plugin",
+    "authors": [
+        {
+            "name": "Fil",
+            "email": "fil@rezo.net"
+        }
+    ],
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/php-compatibility": "10.x-dev",
+        "spip/coding-standards": "^1.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

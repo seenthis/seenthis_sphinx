@@ -1,0 +1,76 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 1
+			path: cli_indexer.php
+
+		-
+			message: "#^Function spip_timer not found\\.$#"
+			count: 2
+			path: cli_indexer.php
+
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 2
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function seenthis_titre_me not found\\.$#"
+			count: 1
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function spip_log not found\\.$#"
+			count: 2
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function spip_mysql_error not found\\.$#"
+			count: 1
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function spip_query not found\\.$#"
+			count: 3
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function spip_timer not found\\.$#"
+			count: 2
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function sql_allfetsel not found\\.$#"
+			count: 1
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function sql_fetch not found\\.$#"
+			count: 2
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function sql_in not found\\.$#"
+			count: 1
+			path: indexer_sphinx.php
+
+		-
+			message: "#^Function job_queue_add not found\\.$#"
+			count: 1
+			path: seenthissphinx_options.php
+
+		-
+			message: "#^Function spip_log not found\\.$#"
+			count: 1
+			path: seenthissphinx_options.php
+
+		-
+			message: "#^Function sphinxql_xml not found\\.$#"
+			count: 1
+			path: sphinxql.php
+
+		-
+			message: "#^Undefined variable\\: \\$documents$#"
+			count: 1
+			path: sphinxql.php

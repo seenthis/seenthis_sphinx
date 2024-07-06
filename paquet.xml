@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<paquet
+	prefix="seenthissphinx"
+	version="1.0.0"
+	etat="stable"
+	compatibilite="[4.1.0;4.1.*]"
+>
+	<nom>Seenthis - Sphinx</nom>
+	<!-- Sphinx pour Seenthis -->
+	<auteur>Fil</auteur>
+
+	<pipeline nom="seenthis_instance_objet" action="indexer_me" />
+	<pipeline nom="cache_message" action="indexer_me" />
+
+	<necessite nom="seenthis" />
+	<necessite nom="indexer" />
+	<necessite nom="queue" />
+</paquet>
