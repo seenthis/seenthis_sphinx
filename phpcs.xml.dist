@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset>
+    <file>.</file>
+    <exclude-pattern>lang/*</exclude-pattern>
+    <exclude-pattern>vendor/**/*</exclude-pattern>
+
+    <rule ref="SPIP41"/>
+
+    <config name="ignore_warnings_on_exit" value="1"/>
+    <arg name="cache" value=".php_cs.cache"/>
+    <arg name="report-full" value=".php_cs.txt"/>
+    <arg name="report-summary"/>
+    <arg value="s"/>
+</ruleset>

@@ -1,7 +1,8 @@
 <?php
 
-if (isset($_SERVER['HTTP_HOST']))
+if (isset($_SERVER['HTTP_HOST'])) {
   die('ce script ne fonctionne qu\'en ligne de commande');
+}
 
 define('_CLI_', true);
 define('_HTTPS', 'https'); ## seenthis
@@ -22,9 +23,11 @@ include_spip('indexer_sphinx');
 
 $command = $argv[1];
 
-if (in_array('debug', $argv)) define ('_CLI_DEBUG', true);
+if (in_array('debug', $argv)) {
+	define('_CLI_DEBUG', true);
+}
 
-switch(true) {
+switch (true) {
 	case $command == 'tout':
 		seenthis_indexer_tout();
 		break;
@@ -33,7 +36,7 @@ switch(true) {
 		break;
 	case $command == 'recents':
 	default:
-		seenthis_indexer_recent(30*24*3600);
+		seenthis_indexer_recent(30 * 24 * 3600);
 		break;
 }
 
