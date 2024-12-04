@@ -1,21 +1,21 @@
 <?php
 
 function indexer_sphinx($id_me) {
-  spip_log('indexer '.var_export($id_me,true), 'sphinx');
+  spip_log('indexer ' . var_export($id_me, true), 'sphinx');
   seenthis_indexer_un($id_me);
 }
 
 include_spip('sphinxql');
 
 function seenthis_indexer_un($id) {
-	seenthis_indexer_conditionnel("me.id_me=".intval($id));
+	seenthis_indexer_conditionnel('me.id_me=' . intval($id));
 }
 
 /* indexer les messages recemment modifies ; ca ne prend pas en compte les
  * nouveaux partages etc, mais ca permet de rattraper */
 function seenthis_indexer_recent($delais = 86400) {
 	include_spip('base/abstract_sql');
-	$r = sql_allfetsel('DISTINCT(IF(id_parent>0,id_parent,id_me)) as id', 'spip_me', array('date_modif > DATE_SUB(NOW(),INTERVAL '.$delais.' SECOND)'));
+	$r = sql_allfetsel('DISTINCT(IF(id_parent>0,id_parent,id_me)) as id', 'spip_me', ['date_modif > DATE_SUB(NOW(),INTERVAL ' . $delais . ' SECOND)']);
 	if (count($r)) {
 		$in = sql_in('me.id_me', array_map('array_shift', $r));
 		seenthis_indexer_conditionnel($in);
@@ -23,23 +23,24 @@ function seenthis_indexer_recent($delais = 86400) {
 }
 
 
-function seenthis_indexer_tout( ) {
+function seenthis_indexer_tout() {
 	$req = spip_query('SELECT MIN(id_me) AS mini,MAX(id_me) AS maxi FROM spip_me');
 	$t = sql_fetch($req);
 
 	$step = 1000;
 
-	for ($i = intval($t['mini']); $i<= intval($t['maxi']); $i+=$step) {
+	for ($i = intval($t['mini']); $i <= intval($t['maxi']); $i += $step) {
 		spip_timer('indexer_cond');
-		seenthis_indexer_conditionnel("(me.id_me>=".$i." AND me.id_me<".($i+$step).")");
-		if (defined('_CLI_') AND _CLI_) echo spip_timer('indexer_cond'),"\n";
+		seenthis_indexer_conditionnel('(me.id_me>=' . $i . ' AND me.id_me<' . ($i + $step) . ')');
+		if (defined('_CLI_') and _CLI_) { echo spip_timer('indexer_cond'),"\n";
+		}
 	}
 
-	sphinxql_query('OPTIMIZE INDEX '._SPHINXQL_INDEX);
+	sphinxql_query('OPTIMIZE INDEX ' . _SPHINXQL_INDEX);
 }
 
 function seenthis_indexer_conditionnel($where = '1=0') {
-	mb_internal_encoding("UTF-8"); # pour mb_strtolower ci-dessous
+	mb_internal_encoding('UTF-8'); # pour mb_strtolower ci-dessous
 	spip_query('SET SESSION group_concat_max_len = 1000000');
 
 	$query = '
@@ -71,7 +72,7 @@ function seenthis_indexer_conditionnel($where = '1=0') {
 		LEFT JOIN spip_me_share AS sh ON sh.id_me = me.id_me
 	WHERE
 		me.id_parent = 0
-		AND '.$where.'
+		AND ' . $where . '
 		AND (
 		        1=1
 			OR me.date_modif > "2014-05-15"
@@ -89,59 +90,72 @@ function seenthis_indexer_conditionnel($where = '1=0') {
 		return false;
 	}
 
-	while($t = sql_fetch($req)) {
-		$b = array(
+	while ($t = sql_fetch($req)) {
+		$b = [
 		'id' => $t['id_me'],
 		'title' => ($t['statut'] == 'publi')
 			? seenthis_titre_me($t['texte'])
 			: '',
-		'uri' => _HTTPS . '://' . _HOST . '/messages/'.$t['id_me'],
-		'summary' => '@'.$t['login'].': '.$t['texte'],
+		'uri' => _HTTPS . '://' . _HOST . '/messages/' . $t['id_me'],
+		'summary' => '@' . $t['login'] . ': ' . $t['texte'],
 		'date' => strtotime($t['date']),
 		'content' => ($t['statut'] == 'publi')
-			? $t['texte'] . "\n\n----\n\n".$t['rept']
+			? $t['texte'] . "\n\n----\n\n" . $t['rept']
 			: '',
-		'properties' => array(
+		'properties' => [
 			'objet' => 'me',
 			'id_objet' => $t['id_me'],
 			'date' => $t['date'],
-			'auteurs' => array_values(array_unique(array_map('intval',
-				array_merge(array($t['id_auteur']), explode(',',$t['rauteurs']))
+			'auteurs' => array_values(array_unique(array_map(
+				'intval',
+				array_merge([$t['id_auteur']], explode(',', $t['rauteurs']))
 			))),
-			'authors' => array_values(array_unique(array_filter(array_map('strval',
-				array_merge(array($t['login']), explode(',',$t['rlogins']))
+			'authors' => array_values(array_unique(array_filter(array_map(
+				'strval',
+				array_merge([$t['login']], explode(',', $t['rlogins']))
 			)))),
 			'id_auteur' => intval($t['id_auteur']),
 			'login' => strval($t['login']),
-			'share' => array_values(array_unique(array_filter(array_map('intval',
-				array_merge(array($t['id_auteur']),explode(',',$t['share'])))))),
+			'share' => array_values(array_unique(array_filter(array_map(
+				'intval',
+				array_merge([$t['id_auteur']], explode(',', $t['share']))
+			)))),
 			'published' => intval($t['statut'] == 'publi'),
-			),
+			],
 		'signature' => '',
-		);
+		];
 
 		// gestion des tags
-		$censure = array('#for', '#via_google_reader');
-		$tags = array('tags' => array(), 'oc' => array(), 'url' => array());
-		foreach( array_values(array_unique(array_filter(
-			array_map('mb_strtolower',array_map('strval',
-				array_merge(explode(' | ',$t['tags']), explode(' | ',$t['rtags']))))))) as $m ) {
-			if (in_array($m, $censure)) {}
-			else if ($m[0] == '#') $tags['tags'][] = $m;
-			else if (preg_match(',^https?://,i', $m)) $tags['url'][] = $m;
-			else if (preg_match(',^(.+):(.+),', $m)) $tags['oc'][] = $m;
+		$censure = ['#for', '#via_google_reader'];
+		$tags = ['tags' => [], 'oc' => [], 'url' => []];
+		foreach (
+			array_values(array_unique(array_filter(
+				array_map('mb_strtolower', array_map(
+					'strval',
+					array_merge(explode(' | ', $t['tags']), explode(' | ', $t['rtags']))
+				))
+			))) as $m
+		) {
+			if (in_array($m, $censure)) {
+			}
+			elseif ($m[0] == '#') { $tags['tags'][] = $m;
+			} elseif (preg_match(',^https?://,i', $m)) { $tags['url'][] = $m;
+			} elseif (preg_match(',^(.+):(.+),', $m)) { $tags['oc'][] = $m;
+			}
 		}
 
 		#if (defined('_CLI_') AND _CLI_) var_dump($tags);
-		foreach($tags as $k => &$v) {
-			if (count($v))
+		foreach ($tags as $k => &$v) {
+			if (count($v)) {
 				$b['properties'][$k] = $v;
+			}
 		}
 
 		// normaliser les liens, on ne veut pas les indexer dans le fulltext
 		if (function_exists('seenthissphinx_normaliser_url')) {
-			foreach(array('title','content','summary') as $k)
-				$b[$k] = preg_replace_callback("/"._REG_URL."/uiS", 'seenthissphinx_normaliser_url', $b[$k]);
+			foreach (['title','content','summary'] as $k) {
+				$b[$k] = preg_replace_callback('/' . _REG_URL . '/uiS', 'seenthissphinx_normaliser_url', $b[$k]);
+			}
 		}
 
 		$b['properties'] = json_encode($b['properties']);
@@ -149,18 +163,17 @@ function seenthis_indexer_conditionnel($where = '1=0') {
 
 		$c = array_map('sphinxql_escape_query', $b);
 
-		$query = "REPLACE INTO "._SPHINXQL_INDEX
-			   ." (id,title,uri, summary, date, content,properties,signature) VALUES ($c[id], $c[title], $c[uri], $c[summary], $c[date], $c[content], $c[properties], $c[signature])";
-	
-                spip_log($query,'sphinx');
-	
+		$query = 'REPLACE INTO ' . _SPHINXQL_INDEX
+			   . " (id,title,uri, summary, date, content,properties,signature) VALUES ($c[id], $c[title], $c[uri], $c[summary], $c[date], $c[content], $c[properties], $c[signature])";
+
+				spip_log($query, 'sphinx');
+
 		$a = sphinxql_query($query);
-	
-		if (defined('_CLI_') AND _CLI_) {
-			echo $a ? "+" : "-",$b['title'],' ', $b['uri'],"\n";
-			if (defined('_CLI_DEBUG') AND _CLI_DEBUG) echo $query,"\n";
+
+		if (defined('_CLI_') and _CLI_) {
+			echo $a ? '+' : '-',$b['title'],' ', $b['uri'],"\n";
+			if (defined('_CLI_DEBUG') and _CLI_DEBUG) { echo $query,"\n";
+			}
 		}
-
 	}
-
 }

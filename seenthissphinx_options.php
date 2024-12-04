@@ -1,29 +1,30 @@
 <?php
 
-if (in_array($_GET['page'], array('sphinx','recherche'))
-AND isset($_REQUEST['recherche'])) {
-  $_GET['var_recherche'] = trim(preg_replace(',\W+,u',' ',$_REQUEST['recherche']));
+if (
+	in_array($_GET['page'], ['sphinx','recherche'])
+	and isset($_REQUEST['recherche'])
+) {
+  $_GET['var_recherche'] = trim(preg_replace(',\W+,u', ' ', $_REQUEST['recherche']));
 }
 
 // nom de l'index pour l'enregistrement des donnees
 defined('_SPHINXQL_INDEX') || define('_SPHINXQL_INDEX', 'seenthis');
 
 function seenthissphinx_indexer_me($t) {
-	if (is_array($t))
-		$id_me = intval( ($t['id_parent'] > 0)
-			? $t['id_parent'] : $t['id_me']
-		);
-	else
-		$id_me = $t;
+	if (is_array($t)) {
+		$id_me = intval(($t['id_parent'] > 0)
+			? $t['id_parent'] : $t['id_me']);
+	} else { $id_me = $t;
+	}
 
-	spip_log('job_queue_add indexer'.$id_me, 'sphinx');
-	job_queue_add('indexer_sphinx', 'Indexer sphinx '.$id_me, array($id_me), 'indexer_sphinx', true);
+	spip_log('job_queue_add indexer' . $id_me, 'sphinx');
+	job_queue_add('indexer_sphinx', 'Indexer sphinx ' . $id_me, [$id_me], 'indexer_sphinx', true);
 }
 
 
 function sphinx_retraiter_env($env, $quoi) {
 	static $e;
-	
+
 	if (!isset($e)) {
 		$e = unserialize($env);
 
@@ -41,12 +42,12 @@ function sphinx_retraiter_env($env, $quoi) {
 		}
 
 		if (preg_match(',\@(\w+),iu', $e['recherche'], $r)) {
-			if (!isset($e['login'])) $e['login'] = $r[1];
+			if (!isset($e['login'])) { $e['login'] = $r[1];
+			}
 			$e['recherche'] = str_replace($r[0], ' ', $e['recherche']);
 		}
 
 		$e['recherche'] = trim($e['recherche']);
-
 	}
 
 	return $e[$quoi];
@@ -56,11 +57,11 @@ function sphinx_retraiter_env($env, $quoi) {
 // les mots "rezo" ou "net" ; ˆ utiliser aussi sur la query utilisateur
 // s'applique ˆ $u ou ˆ $r=[ match, É ] d'un preg_replace_callback
 function seenthissphinx_normaliser_url($u) {
-	if (is_array($u)) $u = array_shift($u);
+	if (is_array($u)) { $u = array_shift($u);
+	}
 
 	$u = preg_replace(',^(http|ftp)s?://(www\.)?(.*),i', '\\1-\\3', $u);
 	$u = preg_replace(',\W+,u', '', $u);
 
 	return "$u*";
 }
-
